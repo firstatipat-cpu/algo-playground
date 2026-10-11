@@ -72,6 +72,10 @@ Trim this section to one line once the work is merged — the current files are 
    genuinely missing.
 
 ## Working tree
+- **Live preview of this branch:** https://firstatipat-cpu.github.io/algo-playground/ — GitHub Pages
+  on the **fork** `firstatipat-cpu/algo-playground`, source = this branch. The official site
+  (`bvnixx649.github.io/algo-playground`) still serves the old `main`. PR #1 is open against
+  `bvnixx649:main`. Turn the preview off with `gh api -X DELETE repos/firstatipat-cpu/algo-playground/pages`.
 - **Git:** one branch `main`, tracking `origin/main` (https://github.com/bvnixx649/algo-playground).
   **Everything below is uncommitted** — `git status` shows 19 modified files plus 9 untracked
   (`AGENTS.md`, `CLAUDE.md`, `exam.js`, `handoff.md`, `memory.md`, `np.js`, `projectsummary.md`,
