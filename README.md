@@ -10,7 +10,8 @@ Every lesson steps through the slide examples one move at a time, lets you chang
 and ends with exam-style questions. It is plain HTML/CSS/JS with no build step.
 
 There is also a page for the old paper (69-1-254383-2, 25 questions) with instant checking: `#exam`,
-and a filled-in worksheet for P, NP and NP-Complete with a 15-question self-test: `#np`.
+a filled-in worksheet for P, NP and NP-Complete with a 15-question self-test: `#np`, and a Week 10
+lecture review with two interactives and a 12-question self-test: `#week10`.
 
 Run locally: `python .serve.py` then open http://127.0.0.1:5178
 

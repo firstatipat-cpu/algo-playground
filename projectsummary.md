@@ -36,13 +36,20 @@ A separate **practice page** generates random problems the student solves cell b
   strategies, discussion answers, and the 14-problem summary table), plus a
   **15-question self-test** with instant feedback and a score. Every computed answer is verified in
   `test.js`.
+- **Week 10 review (`#week10`)** — the Week 10 lecture slides (P, NP and NP-Complete, by
+  ผศ.พงศกร สุธาพันธ์) summarised for revision: the four classes with both Euler diagrams, polynomial
+  time, decision problems, tractability, reductions, NP-Complete/NP-Hard, Cook–Levin, SAT & CNF,
+  2-SAT vs 3-SAT, the 3-SAT → CLIQUE worked example, the NP-Complete problem list, HAMPATH ≠ TSP and
+  P vs NP. Includes two interactives — **PATH solved by BFS step by step**, and the
+  **guess-then-verify model of NP** where you pick a truth assignment for
+  `x ∧ (x ∨ y ∨ z̄) ∧ (x̄ ∨ ȳ)` and watch each clause get checked — plus a 12-question self-test.
 
 ## How it works
 - `index.html` holds all CSS and the `<script>` tags; `app.js` builds the shell, the hash router
-  (`#<lesson-id>`, `#practice/<drill-id>`, `#exam`, `#np`) and the shared widgets; each
+  (`#<lesson-id>`, `#practice/<drill-id>`, `#exam`, `#np`, `#week10`) and the shared widgets; each
   `lesson-<id>.js` registers itself with `Lab.register(...)`; `practice.js` registers drills the same
-  way; `exam.js` and `np.js` are plain page modules that reuse `Lab.beat` + `Lab.check`
-  (`exam.js` adds a check-as-you-type box).
+  way; `exam.js`, `np.js` and `week10.js` are plain page modules that reuse `Lab.beat` + `Lab.check`
+  (`exam.js` adds a check-as-you-type box, `week10.js` adds a BFS animation and a SAT widget).
 - Lessons describe their animation as an array of **frames** and a `render(frame)` that returns the
   caption; `Lab.stepper` is the only player. Shared drawing lives in `app.js` (`Lab.graph`,
   `Lab.tree`, `Lab.cellRows`, `Lab.glyph`).

@@ -68,6 +68,16 @@ decisions. Session state lives in [handoff.md](handoff.md); how to work in [AGEN
   `Lab.core.np.facts` and is recomputed by brute force in `test.js` — the page cannot drift from the
   code. Only genuinely unsettled questions are answered "ยังไม่ทราบ" (P vs NP itself, Graph
   Isomorphism's class, whether NP-Complete problems *require* exponential time).
+- **The Week 10 review page (`#week10`) is built from the lecture deck, not the worksheet.**
+  `source/week10_pnp_complete - Repaired.pptx` (30 slides, ผศ.พงศกร สุธาพันธ์) is the lecture for the
+  same topic as `#np`; the two pages have different jobs (lecture review vs worksheet answers) and
+  cross-link. The deck's own graphs are pictures, so the **PATH example graph and the 3-SAT → CLIQUE
+  graph were drawn by hand** for the page — if the lecturer's exact graphs matter, supply the edges.
+  Its numbers are in `Lab.core.week10` and brute-forced in `test.js` (the SAT example's 2 solutions,
+  the PATH reachability and hop count, and the CLIQUE reduction equivalence over all 8 assignments).
+  Geometry of every hand-written SVG was checked numerically (no child outside its `viewBox`, the
+  NP-Complete label inside the lens, no overlapping graph nodes) — the screenshot tool needed a
+  visible desktop window, so this check was numbers, not eyeballs.
 - **Agent context is three durable files plus one dated snapshot, and nothing is duplicated between
   them.** `AGENTS.md` = rules, layout, exemplars (always loaded); `projectsummary.md` = what/why for a
   human; `memory.md` = decisions and invariants (this file); `handoff.md` = a point-in-time snapshot

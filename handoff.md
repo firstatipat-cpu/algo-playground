@@ -8,7 +8,7 @@ A full audit was run and **all 12 findings were fixed**, then two source documen
 pages: the old exam paper (`#exam`) and the P/NP worksheet (`#np`). Nothing is known broken.
 
 ```
-node test.js   →  all 10083 checks passed
+node test.js   →  all 10116 checks passed
 ```
 Browser: all 16 lessons, 3 practice drills, the exam page and the `#np` page driven (every stepper
 frame, every button, every input set to `''`, `0`, `999`, `abc`, `-5`, all 25 exam answers, all 15
@@ -33,6 +33,8 @@ Trim this section to one line once the work is merged — the current files are 
 | `test.js` | **new** — brute-force checks for every solver, the five computed exam keys, and every computed `#np` answer. |
 | `exam.js` | **new** — `#exam`: 25 questions from `source/ex.md`, 20 multiple choice + 5 check-as-you-type, score, reset, "ดูวิธีทำ" folds. |
 | `np.js` | **new** — `#np`: the P/NP/NP-Complete worksheet filled in (definitions + Venn, 8 exercise sections, 14-problem summary table) + a 15-question self-test with score and reset. |
+| `week10.js` | **new** — `#week10`: the Week 10 lecture slides summarised for revision, with 2 interactives (PATH solved by BFS; the guess-then-verify model of NP on `x ∧ (x ∨ y ∨ z̄) ∧ (x̄ ∨ ȳ)`) + a 12-question self-test. |
+| `source/week10_pnp_complete - Repaired.pptx` | the lecture deck (30 slides) the page above was built from. |
 | 2nd audit pass | dead `Lab.stepper` leftovers removed; `Lab.answerInput` + `Lab.scoreboard` added (practice/exam/np now share both); `exam.js` no longer reads `Lab.core.coinrow` at load, and `test.js` loads the page modules before the lessons as a guard; the exam normalisers are now tested for the loose formats they promise; `N.num` accepts a decimal comma; `theme-color` matches the light background; a duplicate `facts` field dropped. |
 | docs | `AGENTS.md`, `projectsummary.md`, `memory.md`, `handoff.md`, `README.md`, `CLAUDE.md` (pointer). |
 
@@ -55,6 +57,12 @@ Trim this section to one line once the work is merged — the current files are 
   drill (4 runs) and `#practice/knapsack` drill (3 runs) still finish with no counted mistakes, so the
   refactored answer wiring behaves the same; the exam's decimal comma locks the answer; its "ตรวจ"
   button shows "ยังไม่ตรง"; both score lines count and reset to 0.
+- `#week10`: 23 routes swept → 0 console errors; the BFS animation ends on
+  `A → B → E → F` (3 steps) and reports that `D` is unreachable; the SAT widget accepts
+  `x=T, y=F, z=F` (3 clauses true) and rejects `y=T` (clause 3 false); 12/12 then reset to 0.
+  Every hand-written SVG checked numerically: 0 children outside their `viewBox`, the NP-Complete
+  label inside the lens (111.7–178.6 of 108–182), the clique graph's 7 edges with the x₃–x₃ edge
+  highlighted, and no two graph nodes closer than 60 (they are 44 apart at minimum before touching).
 
 ## Reference: if you add a lesson
 1. New `lesson-<id>.js` with pure solver(s) at module scope and `Lab.register({...})`.
@@ -76,11 +84,11 @@ Trim this section to one line once the work is merged — the current files are 
   on the **fork** `firstatipat-cpu/algo-playground`, source = this branch. The official site
   (`bvnixx649.github.io/algo-playground`) still serves the old `main`. PR #1 is open against
   `bvnixx649:main`. Turn the preview off with `gh api -X DELETE repos/firstatipat-cpu/algo-playground/pages`.
-- **Git:** one branch `main`, tracking `origin/main` (https://github.com/bvnixx649/algo-playground).
-  **Everything below is uncommitted** — `git status` shows 19 modified files plus 9 untracked
-  (`AGENTS.md`, `CLAUDE.md`, `exam.js`, `handoff.md`, `memory.md`, `np.js`, `projectsummary.md`,
-  `source/`, `test.js`). Nothing was committed or pushed in this session.
-- 29 files at the repo root + `source/` (2 raw inputs). No stray dev server or temp file left behind.
+- **Git:** working branch `audit/fixes-2026-10-11` (pushed to the `fork` remote; PR #1 has 3 commits)
+  on top of `main` = `origin/main` (https://github.com/bvnixx649/algo-playground). 3 commits are
+  pushed; the Week 10 page work on top of them is **uncommitted** (`git status`).
+- `source/` holds the raw exam text, the P/NP worksheet and the Week 10 lecture deck — **untrusted
+  input** (rule 10). The deck's graphs are images, so no page can read them.
 - `node test.js` was last run after the final edit and passed.
 
 ## Next up / Open items
@@ -94,15 +102,19 @@ Trim this section to one line once the work is merged — the current files are 
 2. **Decided not to do (recorded, not pending):** merging the "editorial pass" CSS layer. 36 selectors
    are declared twice on purpose; equal specificity makes a merge order-sensitive and it is
    cosmetic-only. The block now says so in a comment, and `AGENTS.md` rule 8 forbids the bulk version.
-3. **Not tested — needs hardware or accounts:** real touch devices, a screen reader, and the deployed
+3. **The `#week10` graphs are mine, not the deck's.** The slides draw their PATH / CLIQUE graphs as
+   pictures, so I drew equivalent ones (the edges are in `Lab.core.week10.path.edges` and
+   `.clique.edges`). If the lecturer's exact graphs matter, send the edge lists and the two
+   `Lab.graph` calls swap over in one place.
+4. **Not tested — needs hardware or accounts:** real touch devices, a screen reader, and the deployed
    GitHub Pages copy (only the local server was used). The light theme was eyeballed in the browser.
-4. **Context-engineering items deliberately skipped:** no separate project-map file (the Layout +
+5. **Context-engineering items deliberately skipped:** no separate project-map file (the Layout +
    Patterns tables in `AGENTS.md` are the map), no per-feature spec split (the docs are already
    sectioned and ~750 lines total), no MCP server (nothing here needs a DB/CI integration).
 
 ## How to resume
 ```powershell
 cd D:\Project\Algo\algo-playground
-node test.js                 # must print: all 10083 checks passed
+node test.js                 # must print: all 10116 checks passed
 python .serve.py             # then open http://127.0.0.1:5178
 ```

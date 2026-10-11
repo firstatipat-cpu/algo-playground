@@ -277,6 +277,7 @@
           ${Lab.practice ? `<a class="btn big" href="#practice">ฝึกลงมือทำเอง ${ICON.next}</a>` : ''}
           ${Lab.examPage ? `<a class="btn ghost big" href="#exam">ข้อสอบเก่า 25 ข้อ ${ICON.next}</a>` : ''}
           ${Lab.npPage ? `<a class="btn ghost big" href="#np">ใบงาน P · NP · NP-Complete ${ICON.next}</a>` : ''}
+          ${Lab.week10Page ? `<a class="btn ghost big" href="#week10">ทบทวน Week 10 (สไลด์) ${ICON.next}</a>` : ''}
           <div class="herostrip c-st"><div class="scroll"><div id="heroStrip"></div></div></div>
         </section>
         ${chapters}
@@ -345,6 +346,7 @@
     else if (Lab.practice && id.split('/')[0] === 'practice') { current = null; Lab.practice.render(app(), id.split('/')[1]); }
     else if (Lab.examPage && id.split('/')[0] === 'exam') { current = null; Lab.examPage.render(app()); }
     else if (Lab.npPage && id.split('/')[0] === 'np') { current = null; Lab.npPage.render(app()); }
+    else if (Lab.week10Page && id.split('/')[0] === 'week10') { current = null; Lab.week10Page.render(app()); }
     else renderHome();
     window.scrollTo(0, 0);
     onScroll();

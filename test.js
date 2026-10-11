@@ -11,6 +11,7 @@ require('./app.js');
 // (regression guard for the script-order hazard — see handoff.md).
 require('./exam.js');
 require('./np.js');
+require('./week10.js');
 for (const n of ['counting', 'horspool', 'boyer', 'hashing', 'btree', 'coinrow', 'change',
   'collect', 'knapsack', 'obst', 'floyd', 'prim', 'kruskal', 'dijkstra', 'huffman'])
   require('./lesson-' + n + '.js');
@@ -356,6 +357,57 @@ for (let it = 0; it < 200; it++) {
   let opt = 9999;
   for (const p of perm(['B', 'C', 'D'])) { const t = ['A', ...p, 'A']; let d = 0; for (let i = 0; i + 1 < t.length; i++) d += D[t[i]][t[i + 1]]; opt = Math.min(opt, d); }
   check(nn === facts.tsp.nn && opt === facts.tsp.optimal, 'np TSP nearest neighbour 80 = optimal 80');
+}
+
+/* ---------- week10 review page: the slide examples it animates ---------- */
+{
+  const { facts, questions } = Lab.core.week10;
+  check(questions.length === 12, 'week10 page has 12 self-test questions');
+  for (const Q of questions) {
+    check(Number.isInteger(Q.a) && Q.a >= 0 && Q.a < Q.o.length, 'week10 Q' + Q.n + ' answer is a valid option');
+    check(new Set(Q.o).size === Q.o.length, 'week10 Q' + Q.n + ' options are distinct');
+  }
+
+  // slide 11/19: phi = x AND (x OR y OR z-bar) AND (x-bar OR y-bar)  -> x=T, y=F, z free
+  const val = (l, env) => env[l[0]] === l[1];
+  const sat = (clauses, env) => clauses.every((cl) => cl.some((l) => val(l, env)));
+  const sols = [];
+  for (let m = 0; m < 8; m++) {
+    const env = { x: !!(m & 1), y: !!(m & 2), z: !!(m & 4) };
+    if (sat(facts.sat.clauses, env)) sols.push(env.x + ',' + env.y + ',' + env.z);
+  }
+  check(JSON.stringify(sols) === JSON.stringify(['true,false,false', 'true,false,true']), 'week10 SAT example has exactly the 2 solutions the page checks');
+  check(sat(facts.sat.clauses, { x: true, y: false, z: false }), 'week10 SAT example: the slide answer x=T,y=F,z=F verifies');
+
+  // PATH example: BFS must reach F in 3 edges and must not reach D at all
+  {
+    const adj = {};
+    for (const [a, b] of facts.path.edges) { (adj[a] = adj[a] || []).push(b); (adj[b] = adj[b] || []).push(a); }
+    const bfs = (s) => { const d = { [s]: 0 }, q = [s]; while (q.length) { const u = q.shift(); for (const v of adj[u] || []) if (d[v] === undefined) { d[v] = d[u] + 1; q.push(v); } } return d; };
+    const d = bfs(facts.path.from);
+    check(d[facts.path.toF] === facts.path.hops, 'week10 PATH: A reaches F in 3 steps');
+    check(d[facts.path.toD] === undefined && facts.path.reachD === false, 'week10 PATH: A cannot reach D');
+  }
+
+  // 3-SAT -> CLIQUE: for every assignment, phi is satisfied iff a true 2-clique exists
+  {
+    const { lits, edges, k } = facts.clique;
+    const c1 = lits.filter((l) => l.clause === 0), c2 = lits.filter((l) => l.clause === 1);
+    const link = (a, b) => edges.some(([x, y]) => (x === a && y === b) || (x === b && y === a));
+    check(edges.length === 7, 'week10 clique graph has 7 edges (9 pairs minus 2 contradictions)');
+    check(link('x3c1', 'x3c2'), 'week10 x3-x3 edge exists');
+    check(!link('x1c1', 'nx1c2') && !link('nx2c1', 'x2c2'), 'week10 a literal never links to its negation');
+    let bad = 0;
+    for (let m = 0; m < 8; m++) {
+      const env = { 1: !!(m & 1), 2: !!(m & 2), 3: !!(m & 4) };
+      const ok = (l) => env[l.var] === l.pos;
+      const formula = [c1, c2].every((cl) => cl.some(ok));
+      let clique = false;
+      for (const a of c1) for (const b of c2) if (ok(a) && ok(b) && link(a.id, b.id)) clique = true;
+      if (formula !== clique || k !== 2) bad++;
+    }
+    check(bad === 0, 'week10 3-SAT <-> CLIQUE reduction holds for all 8 assignments');
+  }
 }
 
 assert.ok(true);
