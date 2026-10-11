@@ -7,6 +7,7 @@
   /* text table: first column = row label, other cells = prose */
   const tbl = (head, rows, center) => `<div class="scroll"><table class="dt"><tr>${head.map((h) => `<th${center ? ' style="text-align:center"' : ''}>${h}</th>`).join('')}</tr>${rows.map((r) => `<tr>${r.map((c, i) => `<td${i ? ' class="t"' : ''}${center && i ? ' style="text-align:center"' : ''}>${c}</td>`).join('')}</tr>`).join('')}</table></div>`;
   const yes = (b) => (b ? '<b style="color:var(--ok)">จริง</b>' : '<b style="color:var(--bad)">เท็จ</b>');
+  const sol = (k) => (facts.subsetSum[k].length ? `<b style="color:var(--ok)">มี (${facts.subsetSum[k].length} ชุด)</b>` : '<b style="color:var(--bad)">ไม่มี</b>');
 
   /* ---------- facts used on the page; test.js recomputes all of them ---------- */
   const facts = {
@@ -64,7 +65,7 @@
   </svg>`;
 
   const SEC = [
-    { kick: 'นิยาม', title: 'สี่คลาสที่ต้องแยกให้ออก', open: true, html: `${venn}
+    { kick: 'นิยาม', title: 'สี่คลาสที่ต้องแยกให้ออก', html: `${venn}
       <ul class="clean">
         <li><b>P</b> — ปัญหาที่ <i>แก้ได้</i> (ตัดสินใจได้) ในเวลาพหุนาม เช่น sorting, shortest path, 2-SAT</li>
         <li><b>NP</b> — ปัญหาที่คำตอบ "ใช่" มี <b>certificate</b> สั้น ๆ ที่ <i>ตรวจสอบ</i> ได้ในเวลาพหุนาม (NP ไม่ได้แปลว่า "ไม่ polynomial")</li>
@@ -110,7 +111,7 @@
        ['ปัญหา NP-Complete ทุกปัญหาเป็น NP-Hard', yes(true), 'ตามนิยาม'],
        ['มี algorithm พหุนามของ NP-Complete ตัวหนึ่ง → P = NP', yes(true), 'ทุกปัญหาใน NP ลดรูปมาหามันได้'],
        ['Halting Problem เป็น NP-Complete', yes(false), 'ตัดสินใจไม่ได้ จึงไม่อยู่ใน NP'],
-       ['NP-Complete มี exponential time algorithm เสมอ', yes(false), 'ที่รู้จักเป็น exponential แต่ยังพิสูจน์ไม่ได้ว่าจำเป็น (ถ้า P=NP จะมีพหุนาม)']])
+       ['NP-Complete <b>จำเป็นต้อง</b>ใช้เวลา exponential เสมอ', yes(false), 'ที่รู้จักเป็น exponential แต่ยังพิสูจน์ไม่ได้ว่าจำเป็น (ถ้า P=NP จะมีพหุนาม)']])
       + `<p style="color:var(--ink-3);font-size:14.5px">ถ้าวิชานี้ต้องการให้ตอบเป็น จริง/เท็จ ตรง ๆ โดยไม่มีการตอบ "ยังไม่ทราบ": ข้อ 2 = <b>เท็จ</b> และข้อ 8 = <b>เท็จ</b> (ภายใต้สมมติฐาน P ≠ NP ที่คอร์สนี้ใช้)</p>` },
     { kick: 'แบบฝึก 2.2', title: 'ปัญหานี้อยู่คลาสใด', html: tbl(
       ['ปัญหา', 'คลาส', 'เหตุผลสั้น ๆ'],
@@ -168,23 +169,23 @@
         'independent set ขนาด k เลือกได้ clause ละ 1 ตัว และไม่มีคู่ขัดกัน → assignment ที่ทำให้ทุก clause จริง']]) },
     { kick: 'แบบฝึก 5', title: 'ลองคำนวณเอง (เฉลย)', html: `${tbl(
       ['5.1 CNF', 'Satisfiable?', 'Assignment / เหตุผล'],
-      [['φ₁ = (x₁∨x₂)∧(¬x₁∨x₃)∧(¬x₂∨¬x₃)∧(x₁∨¬x₂∨x₃)', '<b style="color:var(--ok)">Satisfiable</b>', `ค่าเดียวที่ใช้ได้: ${K('x₁=T, x₂=F, x₃=T')}`],
+      [['φ₁ = (x₁∨x₂)∧(¬x₁∨x₃)∧(¬x₂∨¬x₃)∧(x₁∨¬x₂∨x₃)', '<b style="color:var(--ok)">Satisfiable</b>', `ค่าเดียวที่ใช้ได้: ${K(facts.sat.phi1)}`],
        ['φ₂ = (x₁)∧(¬x₁∨x₂)∧(¬x₂∨x₃)∧(¬x₁∨¬x₃)', '<b style="color:var(--bad)">Unsatisfiable</b>', 'x₁=T → ¬x₃ (จาก clause 4) → ¬x₂ (จาก clause 3) → clause 2 กลายเป็น F'],
        ['φ₃ = (x₁∨x₂)∧(¬x₁∨¬x₂)∧(x₁∨¬x₂)∧(¬x₁∨x₂)', '<b style="color:var(--bad)">Unsatisfiable</b>', 'ทั้ง 4 clause รวมกันบังคับให้ x₁ ต้องเป็น T และ F พร้อมกัน']])}
       ${tbl(['5.2 กราฟ V={1..5}, E={(1,2),(1,4),(1,5),(2,3),(2,5),(3,5),(4,5)}', 'คำตอบ'],
-        [['Maximum Clique', `<b>3</b> — ${K('{1,2,5}')} ${K('{2,3,5}')} ${K('{1,4,5}')} (มี clique ขนาด 4 ไหม → <b>ไม่มี</b>)`],
-         ['Minimum Vertex Cover', `<b>3</b> — ${K('{1,2,5}')} ${K('{1,3,5}')} ${K('{2,4,5}')}`],
-         ['Maximum Independent Set', `<b>2</b> — ${K('{1,3}')} ${K('{2,4}')} ${K('{3,4}')}`],
-         ['Max Clique + Max IS ของ Ḡ', `3 + 3 = <b>6</b> เพราะ MaxIS(Ḡ) = MaxClique(G)`],
-         ['Min VC + Max IS', `3 + 2 = <b>5</b> = |V| (Gallai: cover กับ independent set เป็น complement กันเสมอ)`]])}
+        [['Maximum Clique', `<b>${facts.graph.clique}</b> — ${K('{1,2,5}')} ${K('{2,3,5}')} ${K('{1,4,5}')} (มี clique ขนาด 4 ไหม → <b>ไม่มี</b>)`],
+         ['Minimum Vertex Cover', `<b>${facts.graph.minVC}</b> — ${K('{1,2,5}')} ${K('{1,3,5}')} ${K('{2,4,5}')}`],
+         ['Maximum Independent Set', `<b>${facts.graph.mis}</b> — ${K('{1,3}')} ${K('{2,4}')} ${K('{3,4}')}`],
+         ['Max Clique + Max IS ของ Ḡ', `${facts.graph.clique} + ${facts.graph.clique} = <b>${2 * facts.graph.clique}</b> เพราะ MaxIS(Ḡ) = MaxClique(G)`],
+         ['Min VC + Max IS', `${facts.graph.minVC} + ${facts.graph.mis} = <b>${facts.graph.minVC + facts.graph.mis}</b> = |V| (Gallai: cover กับ independent set เป็น complement กันเสมอ)`]])}
       ${tbl(['5.3 SUBSET-SUM', 'มีเซตย่อย?', 'เซตย่อย'],
-        [['S = {2,5,7,10,14}, t = 19', '<b style="color:var(--ok)">มี (2 ชุด)</b>', `${K('2+7+10')} และ ${K('5+14')}`],
-         ['S = {1,3,5,8,13}, t = 20', '<b style="color:var(--bad)">ไม่มี</b>', 'ลองทุกเซตย่อยแล้วไม่มีผลรวม 20 (ใกล้สุด 19 = 1+5+13, 21 = 8+13)'],
-         ['S = {2,4,6,8}, t = 11', '<b style="color:var(--bad)">ไม่มี</b>', 'ทุกตัวเป็นเลขคู่ ผลรวมได้แต่เลขคู่']])}
+        [['S = {2,5,7,10,14}, t = 19', sol('a'), facts.subsetSum.a.map((x) => K(x)).join(' และ ')],
+         ['S = {1,3,5,8,13}, t = 20', sol('b'), 'ลองทุกเซตย่อยแล้วไม่มีผลรวม 20 (ใกล้สุด 19 = 1+5+13, 21 = 8+13)'],
+         ['S = {2,4,6,8}, t = 11', sol('c'), 'ทุกตัวเป็นเลขคู่ ผลรวมได้แต่เลขคู่']])}
       ${tbl(['5.4 GRAPH COLORING — A–B, A–C, B–D, C–D, D–E', 'คำตอบ'],
         [['2-Colorable?', `<b style="color:var(--ok)">ได้</b> — ${K('A=สี1, B=สี2, C=สี2, D=สี1, E=สี2')} (กราฟเป็น bipartite: 4-cycle A-B-D-C-A)`],
          ['3-Colorable?', '<b>ได้</b> (ได้ 2 สีก็ใช้ 3 สีได้)'],
-         ['Chromatic number', '<b>2</b>'],
+         ['Chromatic number', `<b>${facts.chromatic}</b>`],
          ['k-Coloring เป็น NP-Complete เมื่อ', 'k ≥ <b>3</b> · เป็น P เมื่อ k = <b>2</b> (เช็ก bipartite ได้ด้วย BFS)']])}` },
     { kick: 'แบบฝึก 6', title: 'รับมือกับ NP-Complete', html: `${tbl(
       ['กลยุทธ์', 'คำอธิบาย'],
@@ -198,12 +199,12 @@
         [['รอบ 1: เลือก (1,2)', `C = {1,2} · ลบ (1,2),(2,3),(1,4) → เหลือ ${K('(3,6),(4,5),(5,6)')}`],
          ['รอบ 2: เลือก (3,6)', `C = {1,2,3,6} · ลบ (3,6) → เหลือ ${K('(4,5),(5,6)')}`],
          ['รอบ 3: เลือก (4,5)', 'C = {1,2,3,4,5,6} · ลบ (4,5),(5,6) → ว่าง'],
-         ['|C|', `<b>6</b>`],
-         ['Optimal vertex cover', `<b>3</b> — ${K('{1,3,5}')} (หรือ ${K('{2,4,6}')})`],
-         ['อัตราส่วน |C| / |Optimal|', `<b>6/3 = 2</b> → รับประกันไม่เกิน <b>2 เท่า</b> ของ optimal`]])}
+         ['|C|', `<b>${facts.approx.size}</b>`],
+         ['Optimal vertex cover', `<b>${facts.approx.optimal}</b> — ${K('{1,3,5}')} (หรือ ${K('{2,4,6}')})`],
+         ['อัตราส่วน |C| / |Optimal|', `<b>${facts.approx.size}/${facts.approx.optimal} = ${facts.approx.size / facts.approx.optimal}</b> → รับประกันไม่เกิน <b>2 เท่า</b> ของ optimal`]])}
       ${tbl(['6.3 TSP Nearest Neighbour จาก A', 'จุดที่ใกล้สุด', 'ระยะ'],
         [['A', 'B (10)', '10'], ['B', 'D (25) · C ไกล 35', '25'], ['D', 'C (30)', '30'], ['กลับ A', '—', '15']])}
-      <p>Tour: ${K('A→B→D→C→A')} · ระยะรวม <b>80</b> · Optimal ก็ได้ <b>80</b> → heuristic ให้คำตอบห่างจาก optimal <b>0%</b> ในกราฟนี้ (โชคดี ไม่ได้การันตี)</p>` },
+      <p>Tour: ${K(facts.tsp.tour)} · ระยะรวม <b>${facts.tsp.nn}</b> · Optimal ก็ได้ <b>${facts.tsp.optimal}</b> → heuristic ให้คำตอบห่างจาก optimal <b>${((facts.tsp.nn - facts.tsp.optimal) / facts.tsp.optimal * 100).toFixed(0)}%</b> ในกราฟนี้ (โชคดี ไม่ได้การันตี)</p>` },
     { kick: 'แบบฝึก 7', title: 'คำถามวิเคราะห์ (แนวคำตอบ)', html: tbl(
       ['คำถาม', 'แนวคำตอบ'],
       [['ถ้า P = NP จะเกิดอะไรขึ้น', 'Cryptography แตก (RSA/ECC ถอดกุญแจได้เร็ว) · Optimization ที่เป็น NP-Hard ทั้งหมดแก้ได้ดีที่สุด · AI/ML วางแผนและเรียนได้แบบหาคำตอบที่ดีที่สุด · คณิตศาสตร์พิสูจน์ทฤษฎีอัตโนมัติได้'],
@@ -222,14 +223,14 @@
        ['Clique', '?', '✓', '✓', '✓', 'exponential'],
        ['Vertex Cover', '?', '✓', '✓', '✓', '2-approx · parameterized O(1.27^k)'],
        ['Independent Set', '?', '✓', '✓', '✓', 'exponential'],
-       ['Hamiltonian Cycle', '?', '✓', '✓', '✓', 'O(n²·2ⁿ) Held–Karp'],
+       ['Hamiltonian Cycle', '?', '✓', '✓', '✓', 'exponential (Θ(2ⁿ) ขึ้นไป)'],
        ['TSP (Decision)', '?', '✓', '✓', '✓', 'O(n²·2ⁿ) Held–Karp · 1.5-approx Christofides'],
        ['Subset Sum', '?', '✓', '✓', '✓', 'O(n·t) pseudo-polynomial · O(2^(n/2))'],
        ['Graph Coloring (k ≥ 3)', '?', '✓', '✓', '✓', 'exponential (3-color: ~1.33ⁿ)'],
        ['Knapsack (0/1)', '?', '✓', '✓', '✓', 'O(nW) pseudo-polynomial'],
        ['Graph Isomorphism', '?', '✓', '?', '?', 'quasi-polynomial (Babai 2015)'],
        ['Halting Problem', '–', '–', '–', '✓', 'ไม่มีอัลกอริทึม (undecidable)']], true)
-      + `<p style="color:var(--ink-3);font-size:14.5px">? = ยังไม่ทราบ (ถือว่า "ไม่ใช่" ตามสมมติฐาน P ≠ NP) · ✓ = ใช่ · – = ไม่ — 「∈ P?」 ของปัญหา NP-Complete ตอบ "ยังไม่ทราบ" ไม่ใช่ "ไม่" เพราะถ้า P = NP ก็จะอยู่ใน P</p>` },
+      + `<p style="color:var(--ink-3);font-size:14.5px">? = ยังไม่ทราบ (ถือว่า "ไม่ใช่" ตามสมมติฐาน P ≠ NP) · ✓ = ใช่ · – = ไม่ — ในคอลัมน์ "∈ P?" ของปัญหา NP-Complete ตอบ "ยังไม่ทราบ" ไม่ใช่ "ไม่" เพราะถ้า P = NP ก็จะอยู่ใน P</p>` },
     { kick: 'แบบทดสอบสั้น', title: 'Self-test 15 ข้อ', test: true },
   ];
 
